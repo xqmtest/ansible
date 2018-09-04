@@ -282,6 +282,7 @@ class ImageManager(DockerBaseClass):
         self.http_timeout = parameters.get('http_timeout')
         self.push = parameters.get('push')
         self.buildargs = parameters.get('buildargs')
+        self.labels = parameters.get('labels')
 
         # If name contains a tag, it takes precedence over tag parameter.
         repo, repo_tag = parse_repository_tag(self.name)
@@ -501,7 +502,8 @@ class ImageManager(DockerBaseClass):
             pull=self.pull,
             forcerm=self.rm,
             dockerfile=self.dockerfile,
-            decode=True
+            decode=True,
+            labels=self.labels
         )
         build_output = []
         if self.tag:
@@ -578,6 +580,7 @@ def main():
         tag=dict(type='str', default='latest'),
         use_tls=dict(type='str', default='no', choices=['no', 'encrypt', 'verify']),
         buildargs=dict(type='dict', default=None),
+        labels=dict(type='dict', default=None),
     )
 
     client = AnsibleDockerClient(
