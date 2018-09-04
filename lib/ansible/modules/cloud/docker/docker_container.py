@@ -1162,6 +1162,7 @@ class Container(DockerBaseClass):
         if container:
             self.Id = container['Id']
             self.Image = container['Image']
+            self.Labels = container['Config']['Labels']
         self.log(self.container, pretty_print=True)
         self.parameters = parameters
         self.parameters.expected_links = None
@@ -1768,8 +1769,14 @@ class ContainerManager(DockerBaseClass):
         return image
 
     def _image_is_different(self, image, container):
-        if image and image.get('Id'):
-            if container and container.Image:
+        if image and container:
+            if container.Labels and image['ContainerConfig']['Labels']:
+                container_commit_id = container.Labels.get('commit_id')
+                image_commit_id = image['ContainerConfig']['Labels'].get('commit_id')
+                if container_commit_id != image_commit_id:
+                    return True
+
+            if image.get('Id') and container.Image:
                 if image.get('Id') != container.Image:
                     return True
         return False
