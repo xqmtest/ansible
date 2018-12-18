@@ -1773,7 +1773,7 @@ class ContainerManager(DockerBaseClass):
             if container.Labels and image['ContainerConfig']['Labels']:
                 container_commit_id = container.Labels.get('commit_id')
                 image_commit_id = image['ContainerConfig']['Labels'].get('commit_id')
-                if container_commit_id != image_commit_id:
+                if container_commit_id and container_commit_id != image_commit_id:
                     return True
 
             if image.get('Id') and container.Image:

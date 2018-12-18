@@ -475,7 +475,8 @@ class ImageManager(DockerBaseClass):
                     # Finding the image does not always work, especially running a localhost registry. In those
                     # cases, if we don't set force=True, it errors.
                     image_name = name
-                    if tag and not re.search(tag, name):
+                    tag_patten = re.compile("[@|:]{}".format(tag))
+                    if tag and not re.search(tag_patten, name):
                         image_name = "%s:%s" % (name, tag)
                     tag_status = self.client.tag(image_name, repo, tag=repo_tag, force=True)
                     if not tag_status:
